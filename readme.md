@@ -1,33 +1,90 @@
-objetivo
+# Objetivo: mysql + apache kafka + mongodb
 
-- source: mysqlconnector
-    - enviar do mysql para o kafka
-- mongosink connector
-    - enviar do kafka para o mongo
+- **Data source:** *MySQL Connector*
+    - Enviar dados do MySQL para o Kafka.
+- **Sink:** *MongoSink Connector*
+    - Enviar dados do Kafka para o MongoDB.
 
-# configurando mysql
+---
 
+## Tecnologias Necessárias
+
+- Docker
+
+---
+
+## Importando as Configurações dos Connectors
+
+Acesse o Control Center em:
+
+```
+http://localhost:9021/clusters/v-Key80wQAGvUlbsDH6X8A/management/connect
+```
+
+---
+
+## Configurando o MySQL
+
+Acesse o container do MySQL e entre no cliente MySQL:
+
+```bash
 docker exec -it fc3-kafka-connect-plugin-mysql-1 bash
 mysql -uroot -p
-password: root
+# senha: root
+```
 
-use fullcycle;
-show tables;
-create table categories (id int auto_increment primary key, name varchar(255));
-show tables;
-desc categories;
+Dentro do MySQL, execute:
 
-insert into categories (name) values ('Eletronicos');
+```sql
+USE fullcycle;
+SHOW TABLES;
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255)
+);
+SHOW TABLES;
+DESC categories;
 
-select * from categories;
+INSERT INTO categories (name) VALUES ('Eletronicos');
+SELECT * FROM categories;
+```
 
-acessando control-center na porta 9021
+---
+
+## Acessando o Control Center
+
+Abra no navegador:
+
+```
 http://localhost:9021/clusters/v-Key80wQAGvUlbsDH6X8A/management/connect
+```
 
-control-center
-acessar topico mysql-server.fullcycle.categories
+Verifique o tópico `"mysql-server.fullcycle.categories"` no Control Center.
 
-insert into categories (name) values ('Cozinha');
-vai aparecer uma nova message no topico
+---
 
-# configurando mongodb
+## Configurando o MongoDB
+
+Insira mais dados via MySQL para testar o fluxo:
+
+```sql
+INSERT INTO categories (name) VALUES ('Cozinha');
+```
+
+---
+
+## Fluxo da Mensagem
+
+```
+client -> MySQL -> Kafka -> MongoDB
+```
+
+---
+
+## Acessando o Mongo Express
+
+Acesse a coleção `fullcycle` via Mongo Express:
+
+```
+http://localhost:8085/
+```
