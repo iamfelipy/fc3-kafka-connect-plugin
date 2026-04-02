@@ -1,4 +1,22 @@
-# Objetivo: mysql + apache kafka + mongodb
+# Testar integrações do Kafka Connect com data source, sink, converters e transformers
+
+## Tecnologias utilizadas
+- MySQL
+- Apache Kafka
+- Kafka Connect
+- MongoDB
+
+## Integrações configuradas
+
+- **Data Source:** MySQL Connector (`mysql-connector`)
+    - Conector: `io.debezium.connector.mysql.MySqlConnector`
+    - Converter (padrão Debezium): `org.apache.kafka.connect.json.JsonConverter`
+    - Transforma dados do MySQL em eventos Kafka
+- **Sink:** MongoDB Sink Connector (`mongo-sink-from-mysql`)
+    - Conector: `com.mongodb.kafka.connect.MongoSinkConnector`
+    - Converter (padrão MongoDB Sink): `org.apache.kafka.connect.json.JsonConverter`
+    - Transformer: `org.apache.kafka.connect.transforms.ExtractField$Value` (campo: `after`)
+    - Consome eventos do Kafka e grava no MongoDB
 
 - **Data source:** *MySQL Connector*
     - Enviar dados do MySQL para o Kafka.
@@ -10,6 +28,18 @@
 ## Tecnologias Necessárias
 
 - Docker
+
+---
+
+## Subindo o ambiente com Docker Compose
+
+Execute o comando abaixo na raiz do projeto para iniciar todos os serviços:
+
+```bash
+docker compose up -d
+```
+
+Aguarde alguns instantes para garantir que todos os containers estejam em execução antes de seguir para as configurações dos connectors.
 
 ---
 
